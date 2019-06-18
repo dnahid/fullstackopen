@@ -6,7 +6,32 @@ const Button = ({onClick, text}) => {
     )
 }
 const Title = ({text}) => <h1>{text}</h1>
-const Statistics = ({type, count, unit}) => <p>{type} {count} {unit}</p>
+const Statistic = ({type, count, unit}) => (
+    <tr>
+        <td>{type}</td>
+        <td>{count} {unit}</td>
+    </tr>
+)
+const Statistics = (props) => {
+    if(props.data.isFeedbackGiven)
+        return (
+            <table>
+                <tbody>
+                    <Statistic type={'good'} count={props.data.good}/>
+                    <Statistic type={'neutral'} count={props.data.neutral}/>
+                    <Statistic type={'bad'} count={props.data.bad}/>
+                    <Statistic type={'all'} count={props.data.all}/>
+                    <Statistic type={'average'} count={props.data.average}/>
+                    <Statistic type={'positive'} count={props.data.percentage}  unit={'%'}/>
+                </tbody>
+            </table>
+        )
+    return (
+        <div>
+            <p>No feedback given.</p>
+        </div>
+    )
+}
 const App = (props) => {
     const [good, setGood] = useState(0)
     const [neutral, setNeutral] = useState(0)
@@ -30,7 +55,7 @@ const App = (props) => {
     }
     let all = good + neutral + bad
     let average = (good + bad * -1) / all
-    if(isFeedbackGiven)
+    let percentage = (good * 100 / all) || 0
     return (
         <div>
             <Title text='give feedback' />
@@ -38,27 +63,8 @@ const App = (props) => {
             <Button text='neutral' onClick={handleNeutral}/>
             <Button text='bad' onClick={handleBad}/>
             <Title text='statistics' />
-            <div>
-                <Statistics type={'good'} count={good}/>
-                <Statistics type={'neutral'} count={neutral}/>
-                <Statistics type={'bad'} count={bad}/>
-                <Statistics type={'all'} count={good + neutral + bad}/>
-                <Statistics type={'average'} count={average}/>
-                <Statistics type={'positive'} count={ (good * 100 / all) || 0}  unit={'%'}/>
-            </div>
+            <Statistics data={{isFeedbackGiven: isFeedbackGiven, good: good, bad: bad, neutral: neutral, average: average, percentage: percentage}} />
         </div>
-    )
-    return (
-        <div>
-        <Title text='give feedback' />
-        <Button text='good' onClick={handleGood}/>
-        <Button text='neutral' onClick={handleNeutral}/>
-        <Button text='bad' onClick={handleBad}/>
-        <Title text='statistics' />
-        <div>
-            <p>No feedback given.</p>
-        </div>
-    </div>
     )
 }
 ReactDOM.render(<App />, document.getElementById('root'));
