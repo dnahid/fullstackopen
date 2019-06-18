@@ -1,34 +1,87 @@
-import React from 'react'
+import React, {useState} from 'react'
 import ReactDOM from 'react-dom'
 
-const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const exercises1 = 10
-  const part2 = 'Using props to pass data'
-  const exercises2 = 7
-  const part3 = 'State of a component'
-  const exercises3 = 14
+// const App = () => {
+//   const course = {
+//     name: 'Half Stack application development',
+//     parts: [
+//       {
+//         name: 'Fundamentals of React',
+//         exercises: 10
+//       },
+//       {
+//         name: 'Using props to pass data',
+//         exercises: 7
+//       },
+//       {
+//         name: 'State of a component',
+//         exercises: 14
+//       }
+//     ]
+//   }
 
+//   return (
+//     <div>
+//       <Header courseName={course.name} />
+//       course.parts.forEach( (part) => (<Content partName={part.name} noOfExpercise={part.exercies} />))
+//       <Total a={course.parts[0].exercises} b={course.parts[1].exercises} c={course.parts[2].exercises} />
+//     </div>
+//   )
+// }
+
+// const Header = (props) => (
+//     <h1>{props.courseName}</h1>
+// )
+// const Content = (props) => (
+//     <p>{props.partName} {props.noOfExpercise}</p>
+// )
+// const Total = (props) => (
+//     <p>Number of exercises {props.a + props.b + props.c}</p>
+// )
+const History = (props) => {
+  if(props.allClicks.length === 0) {
+    return (
+      <div>
+        the app is used by pressing the buttons.
+      </div>
+    )
+  }
   return (
     <div>
-      <Header courseName={course} />
-      <Content partName={part1} noOfExpercise={exercises1} />
-      <Content partName={part2} noOfExpercise={exercises2} />
-      <Content partName={part3} noOfExpercise={exercises3} />
-      <Total a={exercises1} b={exercises2} c={exercises3} />
+      button press history: {props.allClicks.join(' ')}
     </div>
   )
 }
 
-const Header = (props) => (
-    <h1>{props.courseName}</h1>
-)
-const Content = (props) => (
-    <p>{props.partName} {props.noOfExpercise}</p>
-)
-const Total = (props) => (
-    <p>Number of exercises {props.a + props.b + props.c}</p>
+const Button = ({ onClick, text })  => (
+  <button onClick={onClick}>{text}</button>
 )
 
-ReactDOM.render(<App />, document.getElementById('root'))
+const App = (props) => {
+  const [left, setLeft] = useState(0)
+  const [right, setRight] = useState(0)
+  const [allClicks, setAll] = useState([])
+
+  const handleLeftClick = () => {
+    setAll(allClicks.concat('L'))
+    setLeft(left + 1)
+  }
+
+  const handleRightClick = () => {
+    setAll(allClicks.concat('R'))
+    setRight(right + 1)
+  }
+
+  return (
+    <div>
+      <div> 
+        <Button onClick={handleLeftClick} text='left' />
+        <Button onClick={handleRightClick} text='right' />
+        <p><span>Left Value: {left}</span> <span>Right Value: {right}</span></p> 
+        <History allClicks={allClicks} />
+      </div>
+    </div>
+  )
+}
+
+ReactDOM.render(<App/>, document.getElementById('root'))
