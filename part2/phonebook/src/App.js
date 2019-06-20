@@ -1,5 +1,7 @@
 import React, { useState } from 'react'
-import Person from './components/Person'
+import Persons from './components/Persons'
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
 
 const App = () => {
   const [ persons, setPersons] = useState([
@@ -14,13 +16,13 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearchValue, setNewSearchValue ] = useState('')
   const handlePersonNameInput = (event) => {
-    setNewName(event.target.value)
+    setNewName(event.target.value.trim())
   }
   const handlePhoneNumberInput = (event) => {
-    setNewNumber(event.target.value)
+    setNewNumber(event.target.value.trim())
   }
   const handleFilterInput = (event) => {
-    setNewSearchValue(event.target.value)
+    setNewSearchValue(event.target.value.trim())
   }
   const savePerson = (event) => {
     event.preventDefault()
@@ -32,22 +34,10 @@ const App = () => {
     <div>
       <h2>Phonebook</h2>
       <h2>Add a new</h2>
-      <div>
-          filter shown with: <input onChange={handleFilterInput} value={newSearchValue} />
-      </div>
-      <form>
-        <div>
-          name: <input onChange={handlePersonNameInput} value={newName} />
-          number: <input onChange={handlePhoneNumberInput} value={newNumber} />
-        </div>
-        <div>
-          <button type="submit" onClick={savePerson}>add</button>
-        </div>
-      </form>
+      <Filter valueChangeHandler={handleFilterInput} value={newSearchValue} />
+      <PersonForm nameField={{newName: newName, handlePersonNameInput: handlePersonNameInput}} numberField={{newNumber: newNumber, handlePhoneNumberInput: handlePhoneNumberInput}} savePerson={savePerson} />
       <h2>Numbers</h2>
-      <ul>
-          { newSearchValue.length ? persons.filter(person => person.name.toLowerCase().includes(newSearchValue.toLowerCase())).map((person, i) => <Person person={person} key={i} />) : persons.map((person, i) => <Person person={person} key={i}/>)}
-      </ul>
+      <Persons persons={ newSearchValue.length ? persons.filter(person => person.name.toLowerCase().includes(newSearchValue.toLowerCase())) : persons } />
     </div>
   )
 }
