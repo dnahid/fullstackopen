@@ -4,11 +4,11 @@ import Filter from './components/Filter'
 import Display from './components/Display'
 
 const App  = () => {
-  const [textVal, setTextVal] = useState('')
-  const [data, setData] = useState([])
-  const [filteredData, setFilteredData] = useState([])
+  const [ textVal, setTextVal ] = useState('')
+  const [ data, setData ] = useState([])
+  const [ filteredData, setFilteredData ] = useState([])
   const [ countryClicked, setCountryClick ] = useState([false, ''])
-
+  
   const showDetails = (code) => {
       setCountryClick([true, code])
   }
@@ -19,6 +19,7 @@ const App  = () => {
         setData(response.data)
       })
   }, [])
+
   const handleInputChange = (event) => {
     setTextVal(event.target.value)
     setCountryClick([false, ''])
