@@ -3,12 +3,15 @@ import Persons from './components/Persons'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import PersonsService from './services/PersonsService'
+import Notification from './components/Notification'
 
 const App = () => {
   const [ persons, setPersons] = useState([]) 
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newSearchValue, setNewSearchValue ] = useState('')
+  const [ message, setMessage ] = useState(null)
+  const [ type, setType ] = useState('error')
   
   useEffect(
     () => {
@@ -40,7 +43,12 @@ const App = () => {
     else {
       PersonsService
         .create({name:newName.trim(), number: newNumber.trim()})
-        .then(person => setPersons([...persons, person]))
+        .then(person => {
+          setPersons([...persons, person])
+          setMessage(`${person.name} is added to the server`)
+          setTimeout(() => setMessage(null), 2000)
+          setType('success')
+        })
         .catch(error => alert(`Error ${error} occured.`))
     }
     setNewName('')
@@ -51,11 +59,18 @@ const App = () => {
       PersonsService
         .remove(id)
         .then(response => setPersons(persons.filter(e => e.id !== id)))
+        .catch(response => {
+          setPersons(persons.filter(e => e.id !== id))
+          setMessage(`${id} is already removed from the server.`)
+          setTimeout(() => setMessage(null), 2000)
+          setType('error')
+        })
     }
   }
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} type={type}/>
       <h2>Add a new</h2>
       <Filter valueChangeHandler={handleFilterInput} value={newSearchValue} />
       <PersonForm nameField={{newName: newName, handlePersonNameInput: handlePersonNameInput}} numberField={{newNumber: newNumber, handlePhoneNumberInput: handlePhoneNumberInput}} savePerson={savePerson} />
